@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>타임라인 복붙</title>
+</head>
+<style>
+    @font-face {
+    font-family: 'HakgyoansimBareondotumB';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2307-2@1.0/HakgyoansimBareondotumB.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+.button{background-color: green;
+color: white;
+border-radius: 5px;
+font-size:25px;
+padding:45px 45px}
+.button2{background-color: gray;
+color: white;
+font-size:17px;
+padding:5px 5px;
+border-radius:5px;}
+body {
+background-color : #0B173B ;
+}
+p {
+line-height: 100%;
+}
+div.left {width: 40%;
+float: left;}
+div.right {width: 60%;
+float : right;}
+textarea {
+    width: 70%;
+    height: 3000px;
+    font-size: 14px;
+    font-family: 'HakgyoansimBareondotumB';
+}
+</style>
+<SCRIPT>
+var h;
+var m;
+var s;
+var check=0;
+
+// function resize(obj) {
+//     obj.style.height = '1px';
+//     obj.style.height = (12 + obj.scrollHeight) + 'px';
+// }
+
+// window.addEventListener("keypress", function(event) {
+//     if(event.keyCode==36){
+//         if(check==1){
+//             copytimeline();
+//         }
+//         else {
+//             return;
+//         }
+//     }
+// });
+
+function enterkey(){
+	if(window.event.keyCode==13){
+		pinned();
+	}
+}
+
+function pinned (){
+    h=0;
+    m=0;
+    s=0;
+
+    var ptime = document.getElementById("ptime");
+    var hour = parseInt(document.getElementById("hour").value);
+	var min = parseInt(document.getElementById("min").value);
+	var sec = parseInt(document.getElementById("sec").value);
+
+    if(isNaN(hour) || isNaN(min) || isNaN(sec)){
+        info.innerHTML = "값을 빈칸 없이 입력해주세요";
+        ptime.innerHTML = "";
+        check=0;
+        return;
+    }
+    if(hour>23 || hour<0){
+        info.innerHTML = "시를 0~23 사이로 입력해주세요";
+        ptime.innerHTML = "";
+        check=0;
+        return;
+    }
+    if(min>59 || min<0 || sec>59 || sec<0){
+        info.innerHTML = "시간을 제대로 입력해주세요";
+        ptime.innerHTML = "";
+        check=0;
+        return;
+    }
+    h = hour;
+    m = min;
+    s = sec;
+
+    ptime.innerHTML = "시작 시간 " + String(h).padStart(2,'0') + ":" + String(m).padStart(2,'0') + ":" + String(s).padStart(2,'0');
+
+    check=1;
+}
+
+function copytimeline() {
+    if(check==0){
+        info.innerHTML = "시작 시간 저장을 먼저 해주세요"
+        return;
+    }
+    var current = new Date();
+
+    var ch = current.getHours(); // current time
+    var cm = current.getMinutes();
+    var cs = current.getSeconds();
+
+    var ph, pm, ps; // play time
+
+    if(s<=cs){
+        ps = cs-s;
+        if(m<=cm){
+            pm = cm-m;
+            if(h<=ch){
+                ph = ch-h;
+            }
+            else{
+                ph = 24-h+ch;
+            }
+        }
+        else{
+            ch--;
+            pm = 60-m+cm;
+            if(h<=ch){
+                ph = ch-h;
+            }
+            else{
+                ph = 24-h+ch;
+            }
+        }
+    }
+    else{
+        cm--;
+        ps = 60-s+cs;
+        if(m<=cm){
+            pm = cm-m;
+            if(h<=ch){
+                ph = ch-h;
+            }
+            else{
+                ph = 24-h+ch;
+            }
+        }
+        else{
+            ch--;
+            pm = 60-m+cm;
+            if(h<=ch){
+                ph = ch-h;
+            }
+            else{
+                ph = 24-h+ch;
+            }
+        }
+    }
+    var playtime = String(ph).padStart(2,'0') + ":" + String(pm).padStart(2,'0') + ":" + String(ps).padStart(2,'0');
+
+    var timeline = prompt('기록할 시간: '+ playtime, " ");
+
+    window.navigator.clipboard.writeText(playtime + ' ' + timeline);
+
+    var txtarea = document.getElementById("timelineContent");
+    if(timeline!=null){
+        txtarea.value += ('\n' + playtime + ' ' + timeline);
+    }
+}
+
+
+function clearTEXT(){
+	var hour = document.getElementById("hour");
+	var min = document.getElementById("min");
+	var sec = document.getElementById("sec");
+	var info = document.getElementById("info");
+	var ptime = document.getElementById("ptime");
+	
+	hour.innerHTML="";
+	min.innerHTML="";
+	sec.innerHTML="";
+    info.innerHTML="";
+    ptime.innerHTML="";
+
+    h=0;
+    m=0;
+    s=0;
+
+    check=0;
+}
+</SCRIPT>
+<body>
+<div style="color:white">ver 1.0 </div><br>
+<hr>
+
+<div style="text-align:center; color:white;">
+<h1 style="color:blue">타임라인 생성기</h1>
+방송 시작시간 입력 > 원하는 시점에 복사 버튼 누르기<br>
+시간은 24시 형식으로 적는다
+
+<br><br>
+<hr>
+<br>
+<div class="left">
+<form name = "cal" style="display:inline-block;">
+<table style="text-align:left; font-size:22px;" align="center">
+    <td>
+<tr>
+<td>시 : </td>
+<td><input style="font-size:15px;" type="text" id="hour" size=2 maxlength=2 onkeyup="enterkey()"></td>
+<td>분 : </td>
+<td><input style="font-size:15px;" type="text" id="min" value="" size=2 maxlength=2 onkeyup="enterkey()"></td>
+<td>초 : </td>
+<td><input style="font-size:15px;" type="text" id="sec" value="" size=2 maxlength=2 onkeyup="enterkey()"></td>
+</tr>
+<tr>
+    <table style="margin:auto" cellpadding="10">
+        <tr><td><input type="reset" class="button2" value="초기화" onclick="clearTEXT();"></td>
+        <td><input type="button" class="button3" value="시작 시간 저장" onclick="pinned();"></td>
+        <td><input type="button" class="button" value="복사하기" onclick="copytimeline();"></td></tr>
+        </table>
+</tr>
+</td>
+</table>
+<p style="font-size:29px; color:white;" align="center" id="info"></p>
+<p style="font-size:27px; color:yellow;" align="center" id="ptime"></p>
+</div>
+<div class="right">
+<!-- <textarea id="timelineContent" onkeydown="resize(this)" onkeyup="resize(this)" onfocus="this.value = this.value;"></textarea> -->
+<textarea id="timelineContent" ></textarea>
+</div>
+
+
+
+
+
+
+
+
+</form>
+</div>
+</body>
+</html>
