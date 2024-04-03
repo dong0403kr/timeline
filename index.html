@@ -38,8 +38,8 @@ textarea {
     font-family: 'HakgyoansimBareondotumB';
 }
 .profile {
-    width:50px;
-    height:50px;
+    width:70px;
+    height:70px;
     border-radius: 70%;
 }
 </style>
@@ -66,24 +66,16 @@ var check=0;
 // });
 
 
-window.addEventListener("keydown", keysPressed, false);
-window.addEventListener("keyup", keysReleased, false);
+// 단축키
+document.addEventListener('keydown', (event) => {
 
-var keys = [];
-
-function keysPressed(e) {
-    keys[e.keyCode] = true;
-
-    if(keys[16] && keys[13]){
+    if(event.keyCode === 13 && event.shiftKey) {
         copytimeline();
-        e.preventDefault();
+        return false;
     }
-}
+});
 
-function keysReleased(e) {
-    keys[e.keyCode] = false;
-}
-// 단축키 
+
 function enterkey(){
 	if(window.event.keyCode==13){
 		pinned();
